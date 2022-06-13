@@ -38,7 +38,7 @@ public class horsesAllBoard {
         return true;
     }
 
-    // проверка, можно ли находится в клетке с точки зрения координат в пределах индексов доски
+    // проверка, находятся ли координаты в пределах длины доски
 
     public static boolean checkUpAfterMove(int[][] desk, int row, int col) {
         if (row < 0 || row >= desk.length - 1 || col < 0 || col >= desk.length - 1) {
@@ -49,6 +49,7 @@ public class horsesAllBoard {
             }    
         return true;
     }
+    
 
     public static void knightMove(int[][] desk, int r, int c, int rUpdate, int cUpdate) {
         if (checkAvaliableMoves(desk, r, c) == false) {
