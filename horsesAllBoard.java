@@ -1,101 +1,56 @@
 
-// import java.util.Scanner;
+import java.util.Scanner;
 
 public class horsesAllBoard {
 
+    class KnightMove {
+        static int[][] board;
+        static int[][] moves;
+        static int maxMoves;
 
-    public static void main(String[] args) {
-        int[][] board = { { 0, 0, 0, 0, 0 },
-                          { 0, 0, 0, 0, 0 },
-                          { 0, 0, 0, 0, 0 },
-                          { 0, 0, 0, 0, 0 },
-                          { 0, 0, 0, 0, 0 }, };
-
-        knightMove(board, 0, 0, 1, 1);
-
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                System.out.print(board[i][j] + " ");
+        public static void main(String[] args) {
+            board = new int[5][5];
+            maxMoves = board.length * board[0].length;
+            moves = new int[][] { { -2, 1 }, { -2, -1 }, { 2, 1 }, { 2, -1 }, { -1, -2 }, { -1, -2 }, { 1, 2 },
+                    { 1, -2 } };
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board.length; j++) {
+                    if (findPath(i, j, 1)) {
+                        printSol();
+                        System.out.println("------");
+                        board = new int[5][5];
+                    }
+                }
             }
-            System.out.println();
+            System.out.println("No solution");
         }
 
-    }
+        static boolean findPath(int curX, int curY, int moveNum) {
+            board[curX][curY] = moveNum;
+            if (moveNum >= maxMoves)
+                return true;
 
-    static int GlobalmoveCount;
-
-    // проверка, есть ли возможность совершить ход в непройденную раннее клетку (то
-    // есть, значение которой больше нуля)
-
-    public static boolean checkAvaliableMoves(int[][] desk, int row, int col) {
-
-        if (desk[row - 1][col - 2] > 0 && desk[row - 2][col - 1] > 0 && desk[row - 1][col + 2] > 0
-            && desk[row - 2][col + 1] > 0 && desk[row + 1][col + 2] > 0 && desk[row + 2][col + 1]
-            > 0 && desk[row + 1][col - 2] > 0 && desk[row + 2][col - 1] > 0) {
-                            return false;
-                        }
- 
-        return true;
-    }
-
-    // проверка, находятся ли координаты в пределах длины доски
-
-    public static boolean checkUpAfterMove(int[][] desk, int row, int col) {
-        if (row < 0 || row >= desk.length - 1 || col < 0 || col >= desk.length - 1) {
+            for (int i = 0; i < 8; i++) {
+                int nextX = curX + moves[i][0];
+                int nextY = curY + moves[i][1];
+                if (isPossibleMove(nextX, nextY) && findPath(nextX, nextY, moveNum + 1)) {
+                    return true;
+                }
+            }
+            board[curX][curY] = 0;
             return false;
         }
-        if (desk[row][col] > 0) {
-                return false;
-            }    
-        return true;
-    }
-    
 
-    public static void knightMove(int[][] desk, int r, int c, int rUpdate, int cUpdate) {
-        if (checkAvaliableMoves(desk, r, c) == false) {
-            desk[r][c] = 0;
-            GlobalmoveCount -= 1;
-            knightMove(desk, r, c, 0, 0);
+        static boolean isPossibleMove(int x, int y) {
+            return x >= 0 && x < board.length && y >= 0 && y < board.length && board[x][y] == 0;
         }
 
-        if (checkAvaliableMoves(desk, r, c) == true) {
-
-            if (r + rUpdate < 0 && r + rUpdate > desk.length && c + cUpdate < 0 && c + cUpdate > desk.length) {
-                desk[r][c] = 0;
-                GlobalmoveCount -= 1;
-                knightMove(desk, r, c, 0, 0);
-            }
-
-            if (checkUpAfterMove(desk, r + rUpdate, c + cUpdate)) {
-                desk[r][c] = GlobalmoveCount;
-                GlobalmoveCount += 1;
-                desk[r][c] = desk[r + rUpdate][c + cUpdate];
-            // сделать так, чтобы после возврата не совершался один и тот же ход
-            } else {
-                if (checkUpAfterMove(desk, r - 2, c - 1)) {
-                    knightMove(desk, r, c, -2, -1);
+        static void printSol () {
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board.length; j++) {
+                    System.out.println(board[i][j] + " ");
                 }
-                if (checkUpAfterMove(desk, r - 1, c - 2)) {
-                    knightMove(desk, r, c, -1, -2);
-                }
-                if (checkUpAfterMove(desk, r - 2, c + 1)) {
-                    knightMove(desk, r, c, -2, 1);
-                }
-                if (checkUpAfterMove(desk, r - 1, c + 2)) {
-                    knightMove(desk, r, c, -1, 2);
-                }
-                if (checkUpAfterMove(desk, r + 2, c + 1)) {
-                    knightMove(desk, r, c, 2, 1);
-                }
-                if (checkUpAfterMove(desk, r + 1, c + 2)) {
-                    knightMove(desk, r, c, +1, 2);
-                }
-                if (checkUpAfterMove(desk, r - 2, c + 1)) {
-                    knightMove(desk, r, c, -2, 1);
-                }
-                if (checkUpAfterMove(desk, r - 1, c + 2)) {
-                    knightMove(desk, r, c, -1, 2);
-                }
+                System.out.println();
             }
         }
     }
